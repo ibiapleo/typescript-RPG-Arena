@@ -1,40 +1,41 @@
 import type { Classes } from "./enums/classes";
 import { InventarioCheioError } from "./errors/InventarioCheioError";
-import type { Item } from "./item";
+import { PersonagemMortoError } from "./errors/PersonagemMortoError";
+import type { IItem } from "./interfaces/item.interface";
 
 export class Personagem {
-    nome: string;
-    nivel: number;
-    vida: number;
-    vidaMaxima: number = 100;
-    inventario: Item[] = [];
-    classe: Classes;
-    ataque: number;
-    defesa: number = 10;
+    public readonly nome: string;
+    private _vida: number;
+    private _vidaMaxima: number;
+    private _inventario: IItem[] = [];
+    public classe: Classes;
+    public ataque: number;
+    public defesa: number;
 
-    constructor(nome: string, nivel: number, vida: number, classe: Classes, ataque: number, defesa: number) {
+    constructor(nome: string, vida: number, classe: Classes, ataque: number, defesa: number) {
         this.nome = nome;
-        this.nivel = nivel;
-        this.vida = vida;
+        this._vida = vida;
+        this._vidaMaxima = vida;
         this.classe = classe;
         this.ataque = ataque;
         this.defesa = defesa;
     }
 
-    getVida(): number {
-        return this.vida;
+    get vida(): number {
+        return this._vida;
     }
 
-    setVida(vida: number): number {
-        this.vida = vida;
-        return this.vida;
+    set vida(valor: number) {
+        this._vida = Math.max(0, Math.min(valor, this._vidaMaxima));
     }
 
     estaVivo(): boolean {
-        return this.vida > 0;
+        return this._vida > 0;
     }
 
     atacar(alvo: Personagem): number {
+        if (!this.estaVivo() || !alvo.estaVivo()) throw new PersonagemMortoError();
+
         const danoCausado = this.ataque - alvo.defesa;
         if (danoCausado > 0) {
            return danoCausado;
@@ -46,20 +47,20 @@ export class Personagem {
         this.vida += heal;
     }
 
-    adicionarItem(item: Item): void {
-        if (this.inventario.length < 5) {
-            this.inventario.push(item);
+    adicionarItem(item: IItem): void {
+        if (this._inventario.length < 5) {
+            this._inventario.push(item);
             return;
         }
         throw new InventarioCheioError();
     }
 
     usarItem(indice: number): void {
-        if (indice >= 0 && indice < this.inventario.length) {
-            const item = this.inventario[indice];
+        if (indice >= 0 && indice < this._inventario.length) {
+            const item = this._inventario[indice];
             if (item) {
                 item.usar(this);
-                this.inventario.splice(indice, 1);
+                this._inventario.splice(indice, 1);
             }
         }
     }

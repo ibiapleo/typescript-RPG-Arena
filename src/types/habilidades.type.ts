@@ -1,0 +1,1 @@
+export type Habilidades = "golpeBrutal" | "bolaDeFogo" | "meditar" | "flechaPrecisa" | "furtividade";

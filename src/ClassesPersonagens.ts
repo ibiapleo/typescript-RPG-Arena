@@ -1,29 +1,34 @@
+import { Classes } from "./enums/classes";
 import { ManaInsuficienteError } from "./errors/ManaInsuficienteError";
-import { Personagem } from "./personagem";
+import { PersonagemMortoError } from "./errors/PersonagemMortoError";
+import { Personagem } from "./Personagem";
 
 export class Guerreiro extends Personagem {
-    vida: number = 150;
-    vidaMaxima: number = 150;
-    ataque: number = 18;
+    constructor(nome: string) {
+        super(nome, 150, Classes.Guerreiro, 18, 10);
+    }
 
     golpeBrutal(alvo: Personagem): number {
+        if (!this.estaVivo() || !alvo.estaVivo()) throw new PersonagemMortoError();
         const danoCausado = (this.ataque * 2) - alvo.defesa;
-        return danoCausado;
+        return danoCausado > 0 ? danoCausado : 0;
     }
 }
 
 export class Mago extends Personagem {
-    vida: number = 80;
-    ataque: number = 9;
-    mana: number = 100;
+    mana: number;
+    
+    constructor (nome: string) {
+        super(nome, 80, Classes.Mago, 9, 5);
+        this.mana = 100;
+    }
 
     bolaDeFogo(alvo: Personagem): number {
-        if (this.mana >= 30) {
-            const danoCausado = (this.ataque * 3) - alvo.defesa;
-            this.mana -= 30;
-            return danoCausado;
-        }
-        throw new ManaInsuficienteError();
+        if (this.mana < 30) throw new ManaInsuficienteError();
+        if (!this.estaVivo() || !alvo.estaVivo()) throw new PersonagemMortoError();
+        this.mana -= 30;
+        const danoCausado = (this.ataque * 3) - alvo.defesa;
+        return danoCausado > 0 ? danoCausado : 0;
     }
 
     meditar(): void {
@@ -32,27 +37,39 @@ export class Mago extends Personagem {
 }
 
 export class Arqueiro extends Personagem {
-    vida: number = 100;
-    ataque: number = 12;
-    mana: number = 50;
+    mana: number;
+
+    constructor(nome: string) {
+        super(nome, 100, Classes.Arqueiro, 12, 6);
+        this.mana = 30;
+    }
 
     override atacar(alvo: Personagem): number {
-        const danoBase = this.ataque - alvo.defesa;
-        let danoFinal = danoBase;
+        if (!this.estaVivo() || !alvo.estaVivo()) throw new PersonagemMortoError();
+        let dano = this.ataque - alvo.defesa;
         
         if (Math.random() < 0.3) {
-            danoFinal *= 2;
+            dano *= 2;
             console.log("Acerto crítico!");
         }
 
-        return danoFinal;
+        return dano > 0 ? dano : 0;
+    }
+
+    flechaPrecisa(alvo: Personagem): number {
+        if (!this.estaVivo() || !alvo.estaVivo()) throw new PersonagemMortoError();
+        this.mana -= 15;
+        const dano = (this.ataque * 2) - alvo.defesa;
+        return dano > 0 ? dano : 0;
     }
 }
 
 export class Ladino extends Personagem {
-    vida: number = 80;
-    ataque: number = 14;
     emFurtividade: boolean = false;
+
+    constructor(nome: string) {
+        super(nome, 80, Classes.Ladino, 14, 4);
+    }
 
     furtividade(): void {
         this.emFurtividade = true;
@@ -60,13 +77,14 @@ export class Ladino extends Personagem {
     }
 
     override atacar(alvo: Personagem): number {
-        let danoCausado = this.ataque - alvo.defesa;
+        if (!this.estaVivo() || !alvo.estaVivo()) throw new PersonagemMortoError();
+        let dano = this.ataque - alvo.defesa;
         if (this.emFurtividade) {
-            danoCausado *= 4;
+            dano *= 4;
             this.emFurtividade = false;
             console.log(`Ataque furtivo bem-sucedido! ${this.nome} perdeu a furtividade!`);
         }
-        return danoCausado;
+        return dano > 0 ? dano : 0;
     }
 
 

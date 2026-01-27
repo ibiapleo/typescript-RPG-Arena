@@ -1,5 +1,5 @@
 import type { IItem } from "./interfaces/item.interface";
-import type { Personagem } from "./personagem";
+import type { Personagem } from "./Personagem";
 import type { Raridades } from "./enums/raridades";
 
 export class Item implements IItem {
@@ -24,5 +24,14 @@ export class PocaoVida extends Item {
     usar(alvo: Personagem): void {
         console.log(`${this.nome} restaurou ${this.qtdVidaRestaurada} pontos de vida!`);
         alvo.curar(this.qtdVidaRestaurada);
+    }
+}
+
+export class PocaoMana extends Item {
+    qtdManaRestaurada: number = 50;
+
+    usar(alvo: Personagem): void {
+        console.log(`${this.nome} restaurou ${this.qtdManaRestaurada} pontos de mana!`);
+        alvo.curar(this.qtdManaRestaurada);
     }
 }

@@ -1,4 +1,4 @@
-import type { Personagem } from "../personagem";
+import type { Personagem } from "../Personagem";
 import type { Raridades } from "../enums/raridades";
 
 export interface IItem {
