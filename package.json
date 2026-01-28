@@ -5,14 +5,15 @@
   "main": "dist/app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc",
-    "start": "node dist/app.js"
+    "build": "tsc && tsc-esm-fix dist",
+    "start": "npx live-server --entry-file=src/index.html"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@types/node": "^25.0.10",
+    "tsc-esm-fix": "^3.1.2",
     "typescript": "^5.9.3"
   },
   "dependencies": {

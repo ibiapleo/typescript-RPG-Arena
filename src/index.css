@@ -1,0 +1,82 @@
+
+body {
+    min-height: 100vh;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Fira Mono', 'Consolas', monospace;
+    background: url('./assets/wp15259933-4k-baldurs-gate-wallpapers.png') no-repeat center center fixed;
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    color: #fff;
+}
+
+#output {
+    background: #18191a;
+    border-radius: 12px;
+    box-shadow: 0 4px 24px #000a;
+    padding: 2em 2em 1em 2em;
+    min-height: 320px;
+    min-width: 350px;
+    max-width: 90vw;
+    margin-bottom: 2em;
+    white-space: pre-line;
+    font-size: 1.1em;
+    line-height: 1.5;
+    letter-spacing: 0.5px;
+    overflow-y: auto;
+}
+
+#input, #button, #restart-button {
+    font-size: 1.1em;
+    padding: 0.5em 1em;
+    border-radius: 6px;
+    border: none;
+    margin: 0.2em;
+    outline: none;
+}
+
+#input {
+    background: #222;
+    color: #fff;
+    border: 1px solid #444;
+    width: 180px;
+    transition: border 0.2s;
+}
+#input:focus {
+    border: 1.5px solid #6cf;
+}
+
+#button {
+    background: linear-gradient(90deg, #6cf 0%, #3a8dde 100%);
+    color: #fff;
+    cursor: pointer;
+    font-weight: bold;
+    box-shadow: 0 2px 8px #0003;
+    transition: background 0.2s, transform 0.1s;
+}
+#button:hover {
+    background: linear-gradient(90deg, #3a8dde 0%, #6cf 100%);
+    transform: translateY(-2px) scale(1.04);
+}
+
+#restart-button {
+    background: linear-gradient(90deg, #f66 0%, #dd3a3a 100%);
+    color: #fff;
+    cursor: pointer;
+    font-weight: bold;
+    box-shadow: 0 2px 8px #0003;
+    transition: background 0.2s, transform 0.1s;
+}
+#restart-button:hover {
+    background: linear-gradient(90deg, #dd3a3a 0%, #f66 100%);
+    transform: translateY(-2px) scale(1.04);
+}
+
+#restart-button {
+    margin-top: 1em;
+    margin-bottom: 1em;
+}
