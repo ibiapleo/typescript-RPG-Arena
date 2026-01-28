@@ -2,9 +2,10 @@ import type { Classes } from "../enums/classes";
 import { InventarioCheioError } from "../errors/InventarioCheioError";
 import { LadinoEmFurtividadeError } from "../errors/LadinoEmFurtividadeError";
 import { PersonagemMortoError } from "../errors/PersonagemMortoError";
+import { IHabilidade } from "../interfaces/habilidade.interface";
 import type { IItem } from "../interfaces/item.interface";
 
-export class Personagem {
+export abstract class Personagem {
     public readonly nome: string;
     private _vida: number;
     private _vidaMaxima: number;
@@ -32,6 +33,10 @@ export class Personagem {
 
     get inventario(): IItem[] {
         return this._inventario;
+    }
+
+    get habilidades(): IHabilidade[] {
+        return []; //implementação de responsabilidade da subclasse
     }
 
     estaVivo(): boolean {
@@ -82,4 +87,7 @@ export class Personagem {
         return true;
     }
 
+    temMana(): this is { mana: number } {
+        return typeof (this as any).mana === "number";
+    }
 }

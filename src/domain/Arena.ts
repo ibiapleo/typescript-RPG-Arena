@@ -28,9 +28,16 @@ export class Arena {
     executarAcao(atacante: Personagem, defensor: Personagem, acao: Acao): number | void {
         switch (acao.tipo) {
             case "atacar":
-                return atacante.atacar(defensor);
+                const dano = atacante.atacar(defensor);
+                defensor.vida -= dano;
+                return dano;
             case "habilidade":
-                return this.executarHabilidade(atacante, defensor, acao.nome as Habilidades);
+                const danoHab = this.executarHabilidade(atacante, defensor, acao.nome as Habilidades);
+                if (typeof danoHab === "number") {
+                    defensor.vida -= danoHab;
+                    return danoHab;
+                }
+                return 0;
             case "usarItem":
                 atacante.usarItem(acao.indice);
                 return;
@@ -67,7 +74,8 @@ export class Arena {
     async iniciarLuta(
         lutador1: Personagem, 
         lutador2: Personagem,
-        escolherAcao: (atacante: Personagem, defensor: Personagem) => Promise<Acao>    
+        escolherAcao: (atacante: Personagem, defensor: Personagem) => Promise<Acao>,
+        aguardarEnter: () => Promise<void>    
     ): Promise<void> {
         console.log(`A luta começou entre: ${lutador1.nome} e ${lutador2.nome}!`);
         let turno = 1;
@@ -77,8 +85,11 @@ export class Arena {
         try {
             while (atacante.estaVivo() && defensor.estaVivo()) {
                 console.log(`\n--- Turno ${turno} ---`);
+                console.log(`É a vez de ${atacante.nome} atacar ${defensor.nome}.`);
 
                 const acao = await escolherAcao(atacante, defensor);
+
+                console.clear();
 
                 try {
                     const resultado = this.executarAcao(atacante, defensor, acao);
@@ -93,12 +104,31 @@ export class Arena {
 
                 console.log(`Vida de ${defensor.nome}: ${defensor.vida}`);
                 console.log(`Vida de ${atacante.nome}: ${atacante.vida}`);
+
+                await aguardarEnter();
                 
                 [atacante, defensor] = [defensor, atacante];
                 turno++;
             }
-            const vencedor = lutador1.estaVivo() ? lutador1 : lutador2;
+            const vencedor = atacante.estaVivo() ? atacante : defensor;
+            switch (vencedor.constructor.name) {
+                case "Guerreiro":
+                    console.log(`O bravo guerreiro ${vencedor.nome} triunfou com sua força e honra!`);
+                    break;
+                case "Mago":
+                    console.log(`O sábio mago ${vencedor.nome} venceu com sua sabedoria e poder arcano!`);
+                    break;
+                case "Arqueiro":
+                    console.log(`O ágil arqueiro ${vencedor.nome} venceu com precisão e destreza!`);
+                    break;
+                case "Ladino":
+                    console.log(`O astuto ladino ${vencedor.nome} venceu nas sombras, sorrateiro como sempre!`);
+                    break;
+                default:
+                    console.log(`O vencedor é: ${vencedor.nome}`);
+            }
             console.log(`\n${vencedor.nome} venceu a luta!`);
+            await aguardarEnter();
         } catch (error) {
             if (error instanceof Error) console.error("Erro durante a luta:", error.message);
         }

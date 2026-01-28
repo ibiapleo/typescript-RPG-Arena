@@ -2,7 +2,7 @@ import type { IItem } from "../interfaces/item.interface";
 import type { Personagem } from "./Personagem";
 import { Raridades } from "../enums/raridades";
 
-class Item implements IItem {
+abstract class Item implements IItem {
     nome: string;
     descricao: string;
     raridade: Raridades;
@@ -71,17 +71,17 @@ export class PocaoAtaque extends Item {
 }
 
 export class CapaSupremaDaTrindade extends Item {
-    qtdAtaqueAumentado: number = 20;
-    qtdDefesaAumentada: number = 20;
+    qtdAtaqueAumentado: number = 10;
+    qtdDefesaAumentada: number = 10;
     qtdVidaRestaurada: number = 100;
     qtdManaRestaurada: number = 100;
 
     constructor() {
-        super("Traje do Eclipse", "Aumenta 20 pontos de ataque e defesa, restaura 100 pontos de vida e mana.", Raridades.Lendario);
+        super("Capa Suprema da Trindade", "Aumenta 10 pontos de ataque e defesa, restaura 100 pontos de vida e mana.", Raridades.Lendario);
     }
 
     usar(alvo: Personagem): void {
-        console.log(`${this.nome} utilizou a Capa Suprema da Trindade! ${this.qtdAtaqueAumentado} pontos de ataque aumentados! ${this.qtdDefesaAumentada} pontos de defesa aumentados! ${this.qtdVidaRestaurada} pontos de vida restaurados! ${this.qtdManaRestaurada} pontos de mana restaurados!`);
+        console.log(`${alvo.nome} utilizou a Capa Suprema da Trindade! ${this.qtdAtaqueAumentado} pontos de ataque aumentados! ${this.qtdDefesaAumentada} pontos de defesa aumentados! ${this.qtdVidaRestaurada} pontos de vida restaurados! ${this.qtdManaRestaurada} pontos de mana restaurados!`);
         alvo.aumentarAtaque(this.qtdAtaqueAumentado);
         alvo.aumentarDefesa(this.qtdDefesaAumentada);
         alvo.curar(this.qtdVidaRestaurada);
